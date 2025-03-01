@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Celestial</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='40' fill='%23000000'/><circle cx='50' cy='50' r='35' fill='%23333333'/><circle cx='35' cy='40' r='5' fill='white' opacity='0.8'/><circle cx='60' cy='35' r='3' fill='white' opacity='0.6'/><circle cx='70' cy='50' r='2' fill='white' opacity='0.5'/></svg>">
-  <!-- Fonts and styling from the template -->
   <style>
     * {
       margin: 0;
@@ -193,7 +192,6 @@
       }
     }
 
-    /* Media query for very large screens */
     @media (min-width: 1440px) {
       .event-info, .loading, .error {
         max-width: 1200px;
@@ -221,33 +219,27 @@
   </div>
 
   <script>
-    // API Keys
     const TAVILY_API_KEY = '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';
     const GEMINI_API_KEY = 'AIzaSyCbODz7UC5WuOdydsbBT_KHwtUOfQnIAAc';
     
     document.addEventListener('DOMContentLoaded', function() {
-      // DOM Elements
       const loadingIndicator = document.getElementById('loading');
       const errorMessage = document.getElementById('error-message');
       const eventInfo = document.getElementById('event-info');
       const eventSummary = document.getElementById('event-summary');
       
-      // Start the search process automatically when page loads
       fetchCelestialEvents();
       
       async function fetchCelestialEvents() {
         try {
-          // First try getting specific events with Tavily
           const events = await searchSpecificEvents();
           
           if (!events || events.length === 0) {
             throw new Error("No events found");
           }
           
-          // Generate a summary of the most significant event
           const summary = await generateEventSummary(events[0]);
           
-          // Display the summary
           displayEventSummary(summary);
           
         } catch (error) {
@@ -298,7 +290,6 @@
           return [];
         }
         
-        // Prepare the content for analysis
         const combinedContent = searchResults.map(result => {
           return {
             title: result.title,
@@ -307,7 +298,6 @@
           };
         });
         
-        // Use Gemini Flash to extract structured event data
         try {
           const prompt = `
           Extract the most significant upcoming celestial event from the following astronomy information.
@@ -350,13 +340,12 @@
           const data = await response.json();
           const resultText = data.candidates[0].content.parts[0].text;
           
-          // Extract JSON from response
           const jsonMatch = resultText.match(/\{[\s\S]*\}/);
           if (jsonMatch) {
             try {
               const eventData = JSON.parse(jsonMatch[0]);
               console.log("Extracted event data:", eventData);
-              return [eventData]; // Return as array with single event
+              return [eventData]; 
             } catch (jsonError) {
               console.error("Error parsing JSON from Gemini response:", jsonError);
               throw new Error("Failed to parse event data");
@@ -415,18 +404,15 @@
       }
       
       function displayEventSummary(summary) {
-        // Show the generated summary
         eventSummary.innerHTML = summary;
         
-        // Hide loading indicator and show event info
         loadingIndicator.style.display = 'none';
         eventInfo.style.display = 'block';
         
-        // Reset animation classes to allow for re-triggering
         const animatedElements = document.querySelectorAll('.fade-in-blur');
         animatedElements.forEach(element => {
           element.style.animation = 'none';
-          element.offsetHeight; // Trigger reflow
+          element.offsetHeight; 
           element.style.animation = null;
         });
       }
